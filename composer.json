@@ -7,8 +7,9 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "stevenmaguire/yelp-php": "^1.4"
-    },
+        "stevenmaguire/yelp-php": "^1.4",
+        "tymon/jwt-auth": "^0.5.9"
+          },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",

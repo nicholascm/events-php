@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
+use App\Event;
 use Stevenmaguire\Yelp\Client;
+use App\Classes\SearchResults;
 
 class EventController extends Controller
 {
@@ -15,18 +14,15 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $request)
     {
-        $client = new Client(array(
-          'consumerKey' => '8WuYG1u2c4uc2kmjgQRCHg',
-          'consumerSecret' => 'IL8ft9-a2pEV9sRvwCT2DbLvJZs',
-          'token' => 'HnOYcs1CUCn6WCKBN5bRxb5tN3nSRCRc',
-          'tokenSecret' => 'wKScvflHu5aShgOCTBr1qG6EERM',
-          'apiHost' => 'api.yelp.com'
-        ));
 
+        $yelp = new SearchResults($request->search_term, $request->location);
+        $results = $yelp->getEventsWithAttendees();
 
-        $results = $client->search(array('term' => 'burgers', 'location' => 'Fort Walton Beach, FL'));
+        //provide class with term and location
+        //get aggregated response
         return response()->json($results);
     }
 
@@ -35,9 +31,9 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
     }
 
     /**
@@ -48,7 +44,12 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      //TODO: Yelp_ID = string, start_date = date
+      $event = new Event;
+      $event->yelp_id = $request->yelp_id;
+      $event->start_date = date('Y/m/d');
+      $event->save();
+      return 'success';
     }
 
     /**
