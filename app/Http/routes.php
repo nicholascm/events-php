@@ -24,20 +24,10 @@ Route::get('/api/events', 'EventController@index');
 Route::post('/api/events', 'EventController@store');
 Route::get('/events', function() { return view('layouts.app');  });
 
-
-
-Route::get('/api/yelp/search', 'YelpController@search')->middleware('cors');
-
-
-//Get rid of this
-//Route::post('/register', 'Auth\AuthController@postRegister');
-
-//Route::post('/signup', 'Auth\AuthController@signup');
-
+Route::get('/api/yelp/search', 'YelpController@search');
 
 //protected route
-Route:: resource('/api/authenticate', 'AuthenticateController', ['only' => ['index']]);
-
+Route::get('/api/authenticate', 'AuthenticateController@index');
 //authentication with JWT
 Route::post('/api/authenticate', 'AuthenticateController@authenticate');
 Route::post('/api/signup', 'AuthenticateController@signup');
