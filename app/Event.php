@@ -12,6 +12,8 @@ class Event extends Model
 
   public function users()
   {
-    return $this->hasMany(UserEventStatus::class);
+    return $this->belongsToMany(User::class)
+      ->withTimestamps();
   }
+
 }

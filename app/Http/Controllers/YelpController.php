@@ -14,8 +14,7 @@ class YelpController extends Controller
 
     public function __construct()
     {
-      //$this->middleware('jwt.auth', []);
-
+      //$this->middleware('jwt.auth', []);\
     }
     public function search(Request $request)
     {
