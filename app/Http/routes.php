@@ -17,11 +17,12 @@ Route::get('/', function () {
 
 //search for event where event exists for today AND result from YELP api.
 
-Route::get('/api/events', 'EventController@index');
+Route::get('/api/events/{user_id}', 'EventController@index');
 
 //create new Event
 
-Route::post('/api/events', 'EventController@store');
+Route::post('/api/events', 'EventController@create');
+
 Route::get('/events', function() { return view('layouts.app');  });
 
 Route::get('/api/yelp/search', 'YelpController@search');

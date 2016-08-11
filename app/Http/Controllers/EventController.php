@@ -4,26 +4,31 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Event;
+use App\User;
+use App\EventUser;
 use Stevenmaguire\Yelp\Client;
 use App\Classes\SearchResults;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct() {
+      $this->middleware('jwt.auth');
+    }
+     //provide list of all events that the user is attending
 
-    public function index(Request $request)
+    public function index(Request $request, $user_id)
     {
+        //get the current user
+        $user = User::find(1)
+          ->where('id', $user_id)
+          ->first();
 
-        $yelp = new SearchResults($request->search_term, $request->location);
-        $results = $yelp->getEventsWithAttendees();
+        //get the events for today that are associated with that user
+        $user_events = $user->events()
+          ->where('start_date', date('Y-m-d'))
+          ->get();
 
-        //provide class with term and location
-        //get aggregated response
-        return response()->json($results);
+        return response()->json($user_events);
     }
 
     /**
@@ -33,23 +38,21 @@ class EventController extends Controller
      */
     public function create(Request $request)
     {
-
+      $event = Event::firstOrCreate(['yelp_id' => $request->yelp_id, 'start_date' => date('Y-m-d')]);
+      $event_user = EventUser::firstOrCreate(['event_id' => $event->id, 'user_id'=> $request->user_id]);
+      return response()->json(compact('event', 'event_user'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Find or create a new event with an event attendee
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-      //TODO: Yelp_ID = string, start_date = date
-      $event = new Event;
-      $event->yelp_id = $request->yelp_id;
-      $event->start_date = date('Y/m/d');
-      $event->save();
-      return 'success';
+
     }
 
     /**
@@ -83,7 +86,10 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //add/remove new attending users here
+        //get the resource by ID
+        //find or create a new event user
+        //take the action as determine in the request - updating the session_status
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Event;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -27,7 +28,7 @@ class User extends Authenticatable
 
     public function events()
     {
-      return $this->belongsToMany(Events::class)
+      return $this->belongsToMany('App\Event')
         ->withTimestamps();
     }
 }
