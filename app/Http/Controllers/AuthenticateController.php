@@ -15,7 +15,7 @@ class AuthenticateController extends Controller
     {
       //this middleware will validate for the presence of the JWT - include on all secure routes
       $this->middleware('jwt.auth', ['except' => ['authenticate', 'signup']]);
-
+      
     }
 
     //this is used for testing the authentication API until routes are complete
@@ -62,6 +62,7 @@ class AuthenticateController extends Controller
       $user = User::find(1)
         ->where('email', $request->email)
         ->get();
+
       return response()->json(compact('token', 'user'));
     }
 }

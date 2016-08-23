@@ -4,6 +4,7 @@ namespace app\Classes;
 
 use Stevenmaguire\Yelp\Client;
 use App\Event;
+use App\EventUser;
 
 /* Class will be utilized to hide functionality needed to merge Yelp search results with results from the database.
 
@@ -21,9 +22,8 @@ class SearchResults {
   }
 
   //wrapper for API call for the object
-  public function getYelpResults()
+  private function getYelpResults()
   {
-
     $client = new Client(array(
       'consumerKey' => env('YELP_CONSUMER_KEY'),
       'consumerSecret' => env('YELP_CONSUMER_SECRET'),
@@ -37,43 +37,35 @@ class SearchResults {
     return $results;
   }
 
-  //pull the ids from the returned yelp response for using to query database
-  private function getIDsFromYelpResults()
+  //Just get the businesses from the yelp response
+
+  private function getBusinesses()
   {
     $yelp_id_results = [];
     $yelp_results = $this->getYelpResults();
     $yelp_businesses = $yelp_results->businesses;
-    foreach ($yelp_businesses as $event) {
-        array_push($yelp_id_results, $event->id);
-    }
-    return $yelp_id_results;
+    return $yelp_businesses;
   }
 
-  //query the database using the set of IDs pulled from Yelp results
-  public function getEventsWithAttendees()
+  //query for the attendees of a search result if an event already exists
+  public function getSearchResultsWithAttendees()
   {
-    $yelp_ids = $this->getIDsFromYelpResults();
-
-    $events = [];
-
-    foreach($yelp_ids as $id) {
-      $event = Event::where('yelp_id', $id)
+    $businesses = $this->getBusinesses();
+    foreach ($businesses as $location) {
+      $event = Event::where('yelp_id', $location->id)
         ->where('start_date', date('Y-m-d'))
-        ->get();
-      if (count($event) > 0) {
-        array_push($events, $event);
+        ->first();
+
+      if ($event) {
+        $location->attendees = EventUser::where('event_id', $event->id)
+          ->join('users', 'event_user.user_id','=','users.id')
+          ->get(['name','email']);
+      } else {
+        $location->attendees = [];
       }
+
     }
-    return $events;
+    return $businesses;
   }
-
-  private function mergeEventsAndResults()
-  {
-
-    //TODO: Create this method so we can pad the database "events" results with information from the API for a single response to the client
-
-  }
-
-
 
 }

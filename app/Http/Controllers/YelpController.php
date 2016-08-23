@@ -14,12 +14,12 @@ class YelpController extends Controller
 
     public function __construct()
     {
-      //$this->middleware('jwt.auth', []);\
+
     }
     public function search(Request $request)
     {
       $yelp = new SearchResults($request->search_term, $request->location);
-      $results = $yelp->getYelpResults();
+      $results = $yelp->getSearchResultsWithAttendees();
       return response()->json($results);
     }
 }

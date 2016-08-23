@@ -12,7 +12,7 @@ use App\Classes\SearchResults;
 class EventController extends Controller
 {
     public function __construct() {
-      $this->middleware('jwt.auth');
+      //$this->middleware('jwt.auth');
     }
      //provide list of all events that the user is attending
 
@@ -27,6 +27,15 @@ class EventController extends Controller
         $user_events = $user->events()
           ->where('start_date', date('Y-m-d'))
           ->get();
+
+        foreach ($user_events as $event) {
+          $_event_users = EventUser::where('event_id', $event->id)
+            ->get();
+
+          $user_count = count($_event_users);
+
+          $event->attending_count = $user_count;
+        }
 
         return response()->json($user_events);
     }
