@@ -15,7 +15,7 @@ class AuthenticateController extends Controller
     {
       //this middleware will validate for the presence of the JWT - include on all secure routes
       $this->middleware('jwt.auth', ['except' => ['authenticate', 'signup']]);
-      
+
     }
 
     //this is used for testing the authentication API until routes are complete
@@ -31,19 +31,22 @@ class AuthenticateController extends Controller
       $validator = Validator::make($userData, [
           'name' => 'required|max:255',
           'email' => 'required|email|max:255|unique:users',
-          'password' => 'required|min:6|confirmed',
+          'password' => 'required|min:6',
       ]);
 
       $userData['password'] = bcrypt($userData['password']);
-      /*  if ($validator->fails()){
-          throw new ValidationHttpException($validator->errors()->all());
-        } */
+      if ($validator->fails()){
+        $errors = $validator->errors()->all();
+          return response()->json(compact('errors'), 401);
+      }
 
       $user = User::create($userData);
       if(!$user->id) {
-       return $this->response->error('could_not_create_user', 500);
+       return $this->response->error('could_not_create_user', 401);
       }
-      return 'success';
+      $message = 'success';
+      $user = $user;
+      return response()->json(compact('message', 'user'));
     }
 
 

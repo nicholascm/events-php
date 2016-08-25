@@ -22,4 +22,10 @@ class YelpController extends Controller
       $results = $yelp->getSearchResultsWithAttendees();
       return response()->json($results);
     }
+    public function getBusinessByID($id)
+    {
+      $result = new BusinessSearch($id);
+      $info = $result->getBusiness();
+      return $info; 
+    }
 }

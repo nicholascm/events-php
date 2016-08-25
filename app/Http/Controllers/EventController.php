@@ -8,6 +8,7 @@ use App\User;
 use App\EventUser;
 use Stevenmaguire\Yelp\Client;
 use App\Classes\SearchResults;
+use App\Classes\BusinessSearch;
 
 class EventController extends Controller
 {
@@ -29,12 +30,15 @@ class EventController extends Controller
           ->get();
 
         foreach ($user_events as $event) {
+
           $_event_users = EventUser::where('event_id', $event->id)
             ->get();
+          //$user_count = count($_event_users);
+          $event->attendees = $_event_users;
 
-          $user_count = count($_event_users);
-
-          $event->attending_count = $user_count;
+          $_event_info = new BusinessSearch($event->yelp_id);
+          $info = $_event_info->getBusiness();
+          $event->information = $info;
         }
 
         return response()->json($user_events);
