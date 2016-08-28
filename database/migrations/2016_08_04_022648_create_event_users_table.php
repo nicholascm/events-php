@@ -19,12 +19,14 @@ class CreateEventUsersTable extends Migration
             //FK to user table
             $table->integer('user_id');
             $table->foreign('user_id')->references('id')
-              ->on('users');
+              ->on('users')
+              ->unsigned();
 
             //FK to event table
             $table->integer('event_id');
             $table->foreign('event_id')->references('id')
-              ->on('events');
+              ->on('events')
+              ->unsigned();
         });
     }
 
