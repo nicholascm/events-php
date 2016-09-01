@@ -58,7 +58,7 @@ class SearchResults {
 
       if ($event) {
         $location->attendees = EventUser::where('event_id', $event->id)
-          ->join('users', 'event_user.user_id','=','users.id')
+          ->join('users', 'event_users.user_id','=','users.id')
           ->get(['name','email']);
       } else {
         $location->attendees = [];
@@ -67,5 +67,6 @@ class SearchResults {
     }
     return $businesses;
   }
+
 
 }
