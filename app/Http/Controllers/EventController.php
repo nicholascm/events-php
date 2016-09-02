@@ -20,8 +20,8 @@ class EventController extends Controller
     public function index(Request $request, $user_id)
     {
         //get the current user
-        $user = User::find(1)
-          ->where('id', $user_id)
+        $user = User::find($user_id)
+        //  ->where('id', $user_id)
           ->first();
 
         //get the events for today that are associated with that user

@@ -61,9 +61,9 @@ class AuthenticateController extends Controller
       } catch (JWTException $e) {
         return response() -> json(['error'=> 'could_not_create_token'], 500);
       }
+
       //successful authentication provides the token and user info (no password :D )
-      $user = User::find(1)
-        ->where('email', $request->email)
+      $user = User::where('email', $request->email)
         ->get();
 
       return response()->json(compact('token', 'user'));
